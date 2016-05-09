@@ -1,16 +1,10 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 /**
- *this class depends on RetrieveXML class
- * generates latex test from database of questions
- * @author derek
+ * Created by patrick on 4/30/16.
  */
 import java.io.*;
 import java.util.Formatter;
 import java.awt.List;
+
 public class LatexFile {
     private Formatter latex_file_io;
     private File latex_file;
@@ -21,16 +15,16 @@ public class LatexFile {
      * Constructor to create latex file for test
      * @param path the path of the filename for the test's latex file
      * @param dpath the path to the database file
-     * @throws IOException 
+     * @throws IOException
      */
     public LatexFile(String path, String dpath) throws IOException{
-            XMLretriever = new RetrieveXML(dpath);
-            latex_file = new File(path);
-            if(!latex_file.exists()){
-                latex_file.createNewFile();
-            }
-            latex_file_io = new Formatter(latex_file.getAbsolutePath());
-            qcount=1;
+        XMLretriever = new RetrieveXML(dpath);
+        latex_file = new File(path);
+        if(!latex_file.exists()){
+            latex_file.createNewFile();
+        }
+        latex_file_io = new Formatter(latex_file.getAbsolutePath());
+        qcount=1;
     }
     /**
      * Sets up the header for the test's latex file
@@ -39,9 +33,9 @@ public class LatexFile {
     public void WriteLatexHead(String testname){
         latex_file_io.format("\\documentclass[11pt,a4paper]{article}\n\\usepackage{amsmath,amsthm}\n\n\\newcommand{\\fn}[1]{{\\tt #1}}\n\\newcommand{\\cn}[1]{{\\tt \\char\"5C #1}}\n\n\\title{");
         latex_file_io.format(testname);
-        latex_file_io.format("}\n\n\\begin{document}\n\n\\maketitle\n\n");    
+        latex_file_io.format("}\n\n\\begin{document}\n\n\\maketitle\n\n");
     }
-    
+
     /**
      * add instructions for problems on the test
      * @param instructions instructions for problems
@@ -49,7 +43,7 @@ public class LatexFile {
     public void WriteLatexInstructions(String instructions){
         latex_file_io.format("\n\\section{" + instructions + "}\n");
     }
-    
+
     /**
      * Will add questions to the test from a section that are of certain difficulty
      * and will add no more than questionQuantity number of questions
@@ -71,32 +65,32 @@ public class LatexFile {
                     temp_list.add(questionsbysection.getItem(d));
             }
         }
-        
+
         for(int c=0;c<temp_list.getItemCount();c++){
             for(int d=0;d<questionsbydifficulty.getItemCount();d++){
-               if(temp_list.getItem(c).compareTo(questionsbydifficulty.getItem(d))==0)
-            	   LatexQuestions.add(questionsbydifficulty.getItem(d));
+                if(temp_list.getItem(c).compareTo(questionsbydifficulty.getItem(d))==0)
+                    LatexQuestions.add(questionsbydifficulty.getItem(d));
             }
         }
-        
-       if(questionQuantity<=LatexQuestions.getItemCount()){
+
+        if(questionQuantity<=LatexQuestions.getItemCount()){
             for(int c=0;c<questionQuantity;c++){
-               latex_file_io.format(qcount + ") " + XMLretriever.returnTestData(LatexQuestions.getItem(c), "latex_instructions"));
-               latex_file_io.format("\n\n$" + XMLretriever.returnTestData(LatexQuestions.getItem(c), "latex_q") + "$\n\n");
-               latex_file_io.format("\\vfill");
-               qcount++;
+                latex_file_io.format(qcount + ") " + XMLretriever.returnTestData(LatexQuestions.getItem(c), "latex_instructions"));
+                latex_file_io.format("\n\n$" + XMLretriever.returnTestData(LatexQuestions.getItem(c), "latex_q") + "$\n\n");
+                latex_file_io.format("\\vfill");
+                qcount++;
             }
         }
         else{
-                System.out.println("Not enough questions in database. Adding " + LatexQuestions.getItemCount());
-                for(int c=0;c<LatexQuestions.getItemCount();c++){
-                   latex_file_io.format(qcount + ") " + XMLretriever.returnTestData(LatexQuestions.getItem(c), "latex_instructions"));
-                   latex_file_io.format("\n\n$" + XMLretriever.returnTestData(LatexQuestions.getItem(c), "latex_q") + "$\n\n");
-                   qcount++;
-                }
-        }        
+            System.out.println("Not enough questions in database. Adding " + LatexQuestions.getItemCount());
+            for(int c=0;c<LatexQuestions.getItemCount();c++){
+                latex_file_io.format(qcount + ") " + XMLretriever.returnTestData(LatexQuestions.getItem(c), "latex_instructions"));
+                latex_file_io.format("\n\n$" + XMLretriever.returnTestData(LatexQuestions.getItem(c), "latex_q") + "$\n\n");
+                qcount++;
+            }
+        }
     }
-    
+
     /**
      * writes foot of latex test file and closes the formatter
      */
@@ -105,7 +99,3 @@ public class LatexFile {
         latex_file_io.close();
     }
 }
-
-    
-
-
